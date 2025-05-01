@@ -38,8 +38,8 @@ namespace JH
         {
             GetVerticalAndHorizontalInputs();
 
-            moveDirection = PlayerCamera.Instance.transform.forward * verticalMovemnt;
-            moveDirection += PlayerCamera.Instance.transform.right * horizontalMovemnt;
+            moveDirection = PlayerCamera.instance.transform.forward * verticalMovemnt;
+            moveDirection += PlayerCamera.instance.transform.right * horizontalMovemnt;
             moveDirection.y = 0.0f;
             moveDirection.Normalize();
 
@@ -56,8 +56,8 @@ namespace JH
         private void HandleRotation()
         {
             targetRotationDirection = Vector3.zero;
-            targetRotationDirection = PlayerCamera.Instance.cameraObject.transform.forward * verticalMovemnt;
-            targetRotationDirection += PlayerCamera.Instance.cameraObject.transform.right * horizontalMovemnt;
+            targetRotationDirection = PlayerCamera.instance.cameraObject.transform.forward * verticalMovemnt;
+            targetRotationDirection += PlayerCamera.instance.cameraObject.transform.right * horizontalMovemnt;
             targetRotationDirection.y = 0.0f;
             targetRotationDirection.Normalize();
 

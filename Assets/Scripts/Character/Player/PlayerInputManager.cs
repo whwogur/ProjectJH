@@ -7,19 +7,26 @@ namespace JH
 {
     public class PlayerInputManager : MonoBehaviour
     {
-        public static PlayerInputManager instance;
+        private static PlayerInputManager _instance;
+        public static PlayerInputManager instance => _instance;
         PlayerControls playerControls;
 
-        [SerializeField] Vector2 movement;
-        [SerializeField] public float verticalInput;
-        [SerializeField] public float horizontalInput;
+        [Header("Movement Input")]
+        [SerializeField] Vector2 movementInput;
+        public float verticalInput;
+        public float horizontalInput;
         public float moveAmount;
+
+        [Header("Camera Input")]
+        [SerializeField] Vector2 cameraInput;
+        public float cameraVerticalInput;
+        public float cameraHorizontalInput;
 
         private void Awake()
         {
-            if (null == instance)
+            if (null == _instance)
             {
-                instance = this;
+                _instance = this;
             }
             else
             {
@@ -53,7 +60,8 @@ namespace JH
             {
                 playerControls = new PlayerControls();
 
-                playerControls.PlayerMovement.Movement.performed += i => movement = i.ReadValue<Vector2>();
+                playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
+                playerControls.PlayerCamera.CameraControls.performed += i => cameraInput = i.ReadValue<Vector2>();
             }
 
             playerControls.Enable();
@@ -81,13 +89,14 @@ namespace JH
 
         private void Update()
         {
-            HandleMovementInput();
+            HandlePlayerMovementInput();
+            HandleCameraMovementInput();
         }
 
-        private void HandleMovementInput()
+        private void HandlePlayerMovementInput()
         {
-            verticalInput = movement.y;
-            horizontalInput = movement.x;
+            verticalInput = movementInput.y;
+            horizontalInput = movementInput.x;
 
             moveAmount = Mathf.Clamp01(Mathf.Abs(verticalInput) + Mathf.Abs(horizontalInput));
 
@@ -99,6 +108,12 @@ namespace JH
             {
                 moveAmount = 1;
             }
+        }
+
+        private void HandleCameraMovementInput()
+        {
+            cameraVerticalInput = cameraInput.y;
+            cameraHorizontalInput = cameraInput.x;
         }
     }
 }

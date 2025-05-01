@@ -41,6 +41,11 @@ namespace JH
                 );
             }
         }
+
+        protected virtual void LateUpdate()
+        {
+
+        }
     }
 }
 

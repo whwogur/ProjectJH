@@ -426,10 +426,10 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 109973588}
   m_CullTransparentMesh: 1
---- !u!20 &154781877 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 7890567725770495485, guid: 0c3bc5c7f4f851c4d916981cc638f4c8, type: 3}
-  m_PrefabInstance: {fileID: 8062442958907936863}
+--- !u!4 &153709987 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 984766098709051058, guid: 0c3bc5c7f4f851c4d916981cc638f4c8, type: 3}
+  m_PrefabInstance: {fileID: 7787299761902724839}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &314316890
 GameObject:
@@ -1426,7 +1426,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e2f59129aef635946848ff84a6ae0dd4, type: 3}
---- !u!1001 &8062442958907936863
+--- !u!1001 &7787299761902724839
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1436,12 +1436,24 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 933911512418601354, guid: 0c3bc5c7f4f851c4d916981cc638f4c8, type: 3}
       propertyPath: m_Name
-      value: Player Camera
+      value: Player Camera(Left & Right)
       objectReference: {fileID: 0}
     - target: {fileID: 3984377331301975366, guid: 0c3bc5c7f4f851c4d916981cc638f4c8, type: 3}
-      propertyPath: cameraObject
+      propertyPath: cameraPivotTransform
       value: 
-      objectReference: {fileID: 154781877}
+      objectReference: {fileID: 153709987}
+    - target: {fileID: 3984377331301975366, guid: 0c3bc5c7f4f851c4d916981cc638f4c8, type: 3}
+      propertyPath: upAndDownRotationSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3984377331301975366, guid: 0c3bc5c7f4f851c4d916981cc638f4c8, type: 3}
+      propertyPath: leftAndRightRotationSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3984377331301975366, guid: 0c3bc5c7f4f851c4d916981cc638f4c8, type: 3}
+      propertyPath: layersToCollideWith.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9125110551013334096, guid: 0c3bc5c7f4f851c4d916981cc638f4c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1556,4 +1568,4 @@ SceneRoots:
   - {fileID: 3383591799015044690}
   - {fileID: 8778293884903825469}
   - {fileID: 2271819881495844042}
-  - {fileID: 8062442958907936863}
+  - {fileID: 7787299761902724839}
