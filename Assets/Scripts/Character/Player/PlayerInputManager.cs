@@ -11,6 +11,9 @@ namespace JH
         PlayerControls playerControls;
 
         [SerializeField] Vector2 movement;
+        [SerializeField] public float verticalInput;
+        [SerializeField] public float horizontalInput;
+        public float moveAmount;
 
         private void Awake()
         {
@@ -59,6 +62,43 @@ namespace JH
         private void OnDestroy()
         {
             SceneManager.activeSceneChanged -= OnSceneChange;
+        }
+
+        private void OnApplicationFocus(bool focus)
+        {
+            if (enabled)
+            {
+                if (focus)
+                {
+                    playerControls.Enable();
+                }
+                else
+                {
+                    playerControls.Disable();
+                }
+            }
+        }
+
+        private void Update()
+        {
+            HandleMovementInput();
+        }
+
+        private void HandleMovementInput()
+        {
+            verticalInput = movement.y;
+            horizontalInput = movement.x;
+
+            moveAmount = Mathf.Clamp01(Mathf.Abs(verticalInput) + Mathf.Abs(horizontalInput));
+
+            if (0.5f >= moveAmount && 0.0f < moveAmount)
+            {
+                moveAmount = 0.5f;
+            }
+            else if (0.5f < moveAmount &&  1.0f >= moveAmount)
+            {
+                moveAmount = 1;
+            }
         }
     }
 }

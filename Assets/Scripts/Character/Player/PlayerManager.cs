@@ -15,8 +15,13 @@ namespace JH
 
         protected override void Update()
         {
-            base.Update();
 
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            base.Update();
             LocomotionManager.HandleAllMovement();
         }
     }
