@@ -4,9 +4,14 @@ namespace JH
 {
     public class CharacterManager : MonoBehaviour
     {
-        public void Awake()
+        protected virtual void Awake()
         {
             DontDestroyOnLoad(gameObject);
+        }
+
+        protected virtual void Update()
+        {
+
         }
     }
 }
