@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Netcode;
 
 namespace JH
 {
@@ -17,6 +18,23 @@ namespace JH
         {
             character.animator.SetFloat("Horizontal", horizontalValue, 0.1f, Time.deltaTime);
             character.animator.SetFloat("Vertical", verticalValue, 0.1f, Time.deltaTime);
+        }
+
+        public virtual void PlayTargetActionAnimation(
+            string targetAnimation,
+            bool isPerformingAction,
+            bool applyRootMotion = true,
+            bool canRotate = false,
+            bool canMove = false)
+        {
+            character.applyRootMotion = applyRootMotion;
+            character.animator.CrossFade(targetAnimation, 0.2f);
+            character.isPerformingAction = isPerformingAction;
+            character.canRotate = canRotate;
+            character.canMove = canMove;
+
+            // 서버에 알림
+            character.characterNetworkManager.NotifyAnimation_ServerRpc(NetworkManager.Singleton.LocalClientId, targetAnimation, applyRootMotion);
         }
     }
 }
