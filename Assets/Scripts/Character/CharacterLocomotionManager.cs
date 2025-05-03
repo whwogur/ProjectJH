@@ -8,5 +8,10 @@ namespace JH
         {
 
         }
+
+        protected virtual void Update()
+        {
+
+        }
     }
 }

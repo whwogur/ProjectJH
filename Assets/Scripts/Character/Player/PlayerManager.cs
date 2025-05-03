@@ -5,12 +5,14 @@ namespace JH
 {
     public class PlayerManager : CharacterManager
     {
-        PlayerLocomotionManager LocomotionManager;
+        [HideInInspector] public PlayerAnimatorManager playerAnimatorManager;
+        [HideInInspector] public PlayerLocomotionManager playerLocomotionManager;
         protected override void Awake()
         {
             base.Awake();
 
-            LocomotionManager = GetComponent<PlayerLocomotionManager>();
+            playerLocomotionManager = GetComponent<PlayerLocomotionManager>();
+            playerAnimatorManager = GetComponent<PlayerAnimatorManager>();
         }
 
         protected override void Update()
@@ -22,7 +24,7 @@ namespace JH
             }
 
             base.Update();
-            LocomotionManager.HandleAllMovement();
+            playerLocomotionManager.HandleAllMovement();
         }
 
         protected override void LateUpdate()
@@ -42,6 +44,7 @@ namespace JH
             if (IsOwner)
             {
                 PlayerCamera.instance.player = this;
+                PlayerInputManager.instance.player = this;
             }
         }
     }

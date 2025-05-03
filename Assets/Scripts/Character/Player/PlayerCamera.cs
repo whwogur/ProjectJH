@@ -30,7 +30,7 @@ namespace JH
 
         private void Awake()
         {
-            if (null == instance)
+            if (null == _instance)
             {
                 _instance = this;
             }

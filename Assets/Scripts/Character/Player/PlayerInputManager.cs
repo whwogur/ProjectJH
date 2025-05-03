@@ -9,6 +9,7 @@ namespace JH
     {
         private static PlayerInputManager _instance;
         public static PlayerInputManager instance => _instance;
+        public PlayerManager player;
         PlayerControls playerControls;
 
         [Header("Movement Input")]
@@ -108,6 +109,13 @@ namespace JH
             {
                 moveAmount = 1;
             }
+
+            if (null == player)
+            {
+                return;
+            }
+
+            player.playerAnimatorManager.UpdateAnimatorMovementParameters(0, moveAmount);
         }
 
         private void HandleCameraMovementInput()

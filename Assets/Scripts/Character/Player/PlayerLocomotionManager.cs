@@ -21,22 +21,41 @@ namespace JH
             base.Awake();
             player = GetComponent<PlayerManager>();
         }
+        protected override void Update()
+        {
+            base.Update();
 
+            if (player.IsOwner)
+            {
+                player.characterNetworkManager.verticalMovement.Value = verticalMovemnt;
+                player.characterNetworkManager.horizontalMovement.Value = horizontalMovemnt;
+                player.characterNetworkManager.moveAmount.Value = moveAmount;
+            }
+            else
+            {
+                verticalMovemnt = player.characterNetworkManager.verticalMovement.Value;
+                horizontalMovemnt = player.characterNetworkManager.horizontalMovement.Value;
+                moveAmount = player.characterNetworkManager.moveAmount.Value;
+
+                player.playerAnimatorManager.UpdateAnimatorMovementParameters(0, moveAmount);
+            }
+        }
         public void HandleAllMovement()
         {
             HandleRotation();
             HandleGroundedMovement();
         }
 
-        private void GetVerticalAndHorizontalInputs()
+        private void GetMovementValues()
         {
             verticalMovemnt = PlayerInputManager.instance.verticalInput;
             horizontalMovemnt = PlayerInputManager.instance.horizontalInput;
+            moveAmount = PlayerInputManager.instance.moveAmount;
         }
 
         private void HandleGroundedMovement()
         {
-            GetVerticalAndHorizontalInputs();
+            GetMovementValues();
 
             moveDirection = PlayerCamera.instance.transform.forward * verticalMovemnt;
             moveDirection += PlayerCamera.instance.transform.right * horizontalMovemnt;
