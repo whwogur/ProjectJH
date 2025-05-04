@@ -9,6 +9,8 @@ namespace JH
         [Header("NETWORK JOIN")]
         [SerializeField] bool startGameAsClient;
 
+        [HideInInspector] public PlayerUI_HUDManager playerHUDManager;
+
         private void Awake()
         {
             if (null == instance)
@@ -19,6 +21,9 @@ namespace JH
             {
                 Destroy(gameObject);
             }
+
+            //playerHUDManager = GetComponent<PlayerUI_HUDManager>();
+            playerHUDManager = GetComponentInChildren<PlayerUI_HUDManager>();
         }
 
         private void Start()

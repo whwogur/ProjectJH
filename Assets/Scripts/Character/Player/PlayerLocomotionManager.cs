@@ -17,9 +17,11 @@ namespace JH
         [SerializeField] float runningSpeed = 5.0f;
         [SerializeField] float sprintingSpeed = 10.0f;
         [SerializeField] float rotationSpeed = 15.0f;
+        [SerializeField] float sprintingStaminaCost = 1.0f;
 
         [Header("Dodge")]
-        private Vector3 rollDirection;
+        private Vector3 dodgeDirection;
+        [SerializeField] float dodgeStaminaCost = 2.0f;
 
         protected override void Awake()
         {
@@ -117,6 +119,11 @@ namespace JH
             }
 
             // if out of stamina, set sprinting to false
+            if (0 >= player.playerNetworkManager.currentStamina.Value)
+            {
+                player.playerNetworkManager.isSprinting.Value = false;
+                return;
+            }
 
             if (0.5f <= moveAmount) // if moving, set sprinting to true
             {
@@ -127,23 +134,29 @@ namespace JH
                 player.playerNetworkManager.isSprinting.Value = false;
             }
 
+            if (player.playerNetworkManager.isSprinting.Value)
+            {
+                player.playerNetworkManager.currentStamina.Value -= sprintingStaminaCost * Time.deltaTime;
+            }
+
         }
         /* 움직이고 있다면 구르고, 가만히 있는 상태에서 눌렀으면 백스텝 */
         public void AttempToPerformDodge()
         {
-            if (player.isPerformingAction)
+            if (player.isPerformingAction ||
+                player.playerNetworkManager.currentStamina.Value < 0)
             {
                 return;
             }
 
             if (0 < PlayerInputManager.instance.moveAmount)
             {
-                rollDirection = PlayerCamera.instance.cameraObject.transform.forward * PlayerInputManager.instance.verticalInput;
-                rollDirection += PlayerCamera.instance.cameraObject.transform.right * PlayerInputManager.instance.horizontalInput;
+                dodgeDirection = PlayerCamera.instance.cameraObject.transform.forward * PlayerInputManager.instance.verticalInput;
+                dodgeDirection += PlayerCamera.instance.cameraObject.transform.right * PlayerInputManager.instance.horizontalInput;
 
-                rollDirection.y = 0.0f;
-                rollDirection.Normalize();
-                Quaternion playerRotation = Quaternion.LookRotation(rollDirection);
+                dodgeDirection.y = 0.0f;
+                dodgeDirection.Normalize();
+                Quaternion playerRotation = Quaternion.LookRotation(dodgeDirection);
                 player.transform.rotation = playerRotation;
 
                 // Perform roll animation
@@ -154,6 +167,9 @@ namespace JH
                 // perform backstep animation
                 player.playerAnimatorManager.PlayTargetActionAnimation("Quickstep_B", true, true, false, true);
             }
+
+            Debug.Log($"{player.playerNetworkManager.currentStamina.Value} - {dodgeStaminaCost}");
+            player.playerNetworkManager.currentStamina.Value -= dodgeStaminaCost;
         }
     }
 }
