@@ -6,18 +6,28 @@ namespace JH
     public class CharacterAnimatorManager : MonoBehaviour
     {
         CharacterManager character;
-        float vertical;
-        float horizontal;
+        int vertical;
+        int horizontal;
             
         protected virtual void Awake()
         {
-            character = GetComponent<CharacterManager>();   
+            character = GetComponent<CharacterManager>();
+            vertical = Animator.StringToHash("Vertical");
+            horizontal = Animator.StringToHash("Horizontal");
         }
 
-        public void UpdateAnimatorMovementParameters(float horizontalValue, float verticalValue)
+        public void UpdateAnimatorMovementParameters(float horizontalValue, float verticalValue, bool isSprinting)
         {
-            character.animator.SetFloat("Horizontal", horizontalValue, 0.1f, Time.deltaTime);
-            character.animator.SetFloat("Vertical", verticalValue, 0.1f, Time.deltaTime);
+            float scopedHorizontal = horizontalValue;
+            float scopedVertical = verticalValue;
+
+            if (isSprinting)
+            {
+                scopedVertical = 2.0f;
+            }
+
+            character.animator.SetFloat(horizontal, scopedHorizontal, 0.1f, Time.deltaTime);
+            character.animator.SetFloat(vertical, scopedVertical, 0.1f, Time.deltaTime);
         }
 
         public virtual void PlayTargetActionAnimation(

@@ -15,6 +15,7 @@ namespace JH
         private Vector3 targetRotationDirection;
         [SerializeField] float walkingSpeed = 2.0f;
         [SerializeField] float runningSpeed = 5.0f;
+        [SerializeField] float sprintingSpeed = 10.0f;
         [SerializeField] float rotationSpeed = 15.0f;
 
         [Header("Dodge")]
@@ -41,7 +42,7 @@ namespace JH
                 horizontalMovemnt = player.characterNetworkManager.horizontalMovement.Value;
                 moveAmount = player.characterNetworkManager.moveAmount.Value;
 
-                player.playerAnimatorManager.UpdateAnimatorMovementParameters(0, moveAmount);
+                player.playerAnimatorManager.UpdateAnimatorMovementParameters(0, moveAmount, player.playerNetworkManager.isSprinting.Value);
             }
         }
         public void HandleAllMovement()
@@ -69,13 +70,20 @@ namespace JH
             moveDirection.y = 0.0f;
             moveDirection.Normalize();
 
-            if (0.5f < PlayerInputManager.instance.moveAmount)
+            if (player.playerNetworkManager.isSprinting.Value) // Sprinting
             {
-                player.characterController.Move(moveDirection * runningSpeed * Time.deltaTime);
+                player.characterController.Move(moveDirection * sprintingSpeed * Time.deltaTime);
             }
-            else if (0.5f >= PlayerInputManager.instance.moveAmount)
+            else // Not Sprinting
             {
-                player.characterController.Move(moveDirection * walkingSpeed * Time.deltaTime);
+                if (0.5f < PlayerInputManager.instance.moveAmount)
+                {
+                    player.characterController.Move(moveDirection * runningSpeed * Time.deltaTime);
+                }
+                else if (0.5f >= PlayerInputManager.instance.moveAmount)
+                {
+                    player.characterController.Move(moveDirection * walkingSpeed * Time.deltaTime);
+                }
             }
         }
 
@@ -100,6 +108,26 @@ namespace JH
             transform.rotation = targetRotation;
         }
 
+        public void HandleSprinting()
+        {
+            if (player.isPerformingAction)
+            {
+                // set sprinting to false
+                player.playerNetworkManager.isSprinting.Value = false;
+            }
+
+            // if out of stamina, set sprinting to false
+
+            if (0.5f <= moveAmount) // if moving, set sprinting to true
+            {
+                player.playerNetworkManager.isSprinting.Value = true;
+            }
+            else // if stationary, set sprinting to false
+            {
+                player.playerNetworkManager.isSprinting.Value = false;
+            }
+
+        }
         /* 움직이고 있다면 구르고, 가만히 있는 상태에서 눌렀으면 백스텝 */
         public void AttempToPerformDodge()
         {
