@@ -29,10 +29,10 @@ namespace JH
 
         [Header("Character Slots")]
         public CharacterSaveData characterSlot01;
-        //public CharacterSaveData characterSlot02;
-        //public CharacterSaveData characterSlot03;
-        //public CharacterSaveData characterSlot04;
-        //public CharacterSaveData characterSlot05;
+        public CharacterSaveData characterSlot02;
+        public CharacterSaveData characterSlot03;
+        public CharacterSaveData characterSlot04;
+        public CharacterSaveData characterSlot05;
 
         private void Awake()
         {
@@ -49,6 +49,7 @@ namespace JH
         private void Start()
         {
             DontDestroyOnLoad(gameObject);
+            LoadAllCharacterProfiles();
         }
 
         private void Update() // TEMP
@@ -65,32 +66,54 @@ namespace JH
                 LoadGame();
             }
         }
-        private void DecideCharacterFileNameBasedOnCharacterSlot()
+        public string DecideCharacterFileNameBasedOnCharacterSlot(CharacterSlot designatedCharacterSlot)
         {
-            switch (currentCharacterSlot)
+            string scopedFileName = "";
+            switch (designatedCharacterSlot)
             {
                 case CharacterSlot.CharacterSlot_01:
-                    fileName = "CharacterSlot_01";
+                    scopedFileName = "CharacterSlot_01";
                     break;
                 case CharacterSlot.CharacterSlot_02:
-                    fileName = "CharacterSlot_02";
+                    scopedFileName = "CharacterSlot_02";
                     break;
                 case CharacterSlot.CharacterSlot_03:
-                    fileName = "CharacterSlot_03";
+                    scopedFileName = "CharacterSlot_03";
                     break;
                 case CharacterSlot.CharacterSlot_04:
-                    fileName = "CharacterSlot_04";
+                    scopedFileName = "CharacterSlot_04";
                     break;
                 case CharacterSlot.CharacterSlot_05:
-                    fileName = "CharacterSlot_05";
+                    scopedFileName = "CharacterSlot_05";
                     break;
             }
+
+            return scopedFileName;
+        }
+
+        public string GetCharacterName(CharacterSlot designatedCharacterSlot)
+        {
+            switch (designatedCharacterSlot)
+            {
+                case CharacterSlot.CharacterSlot_01:
+                    return characterSlot01.characterName;
+                case CharacterSlot.CharacterSlot_02:
+                    return characterSlot02.characterName;
+                case CharacterSlot.CharacterSlot_03:
+                    return characterSlot03.characterName;
+                case CharacterSlot.CharacterSlot_04:
+                    return characterSlot04.characterName;
+                case CharacterSlot.CharacterSlot_05:
+                    return characterSlot05.characterName;
+            }
+
+            return string.Empty;
         }
 
         public void CreateNewGame()
         {
             // create new file with a file name depending on which slot is used
-            DecideCharacterFileNameBasedOnCharacterSlot();
+            fileName = DecideCharacterFileNameBasedOnCharacterSlot(currentCharacterSlot);
 
             currentCharacterData = new CharacterSaveData();
         }
@@ -98,7 +121,7 @@ namespace JH
         public void LoadGame()
         {
             // load a saved file, with a file name depending on which slot is used
-            DecideCharacterFileNameBasedOnCharacterSlot();
+            fileName = DecideCharacterFileNameBasedOnCharacterSlot(currentCharacterSlot);
 
             saveGameDataWriter = new SaveGameDataWriter();
             saveGameDataWriter.saveDataDirectoryPath = Application.persistentDataPath; //generally works on multiple machine types, safe to use
@@ -111,7 +134,7 @@ namespace JH
         public void SaveGame()
         {
             // Save the current file under a file name depending on which slot is used
-            DecideCharacterFileNameBasedOnCharacterSlot();
+            fileName = DecideCharacterFileNameBasedOnCharacterSlot(currentCharacterSlot);
 
             saveGameDataWriter = new SaveGameDataWriter();
             saveGameDataWriter.saveDataDirectoryPath = Application.persistentDataPath;
@@ -122,6 +145,29 @@ namespace JH
 
             // write info onto a json file which is then saved to the machine
             saveGameDataWriter.CreateNewCharacterSaveFile(currentCharacterData);
+        }
+
+        /* Pre-Load all Character Profiles when starting game */
+        private void LoadAllCharacterProfiles()
+        {
+            saveGameDataWriter = new SaveGameDataWriter();
+            saveGameDataWriter.saveDataDirectoryPath = Application.persistentDataPath;
+
+            for (int i = 0; i < (int)CharacterSlot.END; ++i)
+            {
+                CharacterSlot slot = (CharacterSlot)System.Enum.Parse(typeof(CharacterSlot), $"CharacterSlot_0{i + 1}");
+                saveGameDataWriter.saveFileName = DecideCharacterFileNameBasedOnCharacterSlot(slot);
+                var profile = saveGameDataWriter.LoadSaveFile();
+
+                switch (i)
+                {
+                    case 0/*CharacterSlot_01*/: characterSlot01 = profile; break;
+                    case 1/*CharacterSlot_02*/: characterSlot02 = profile; break;
+                    case 2/*CharacterSlot_03*/: characterSlot03 = profile; break;
+                    case 3/*CharacterSlot_04*/: characterSlot04 = profile; break;
+                    case 4/*CharacterSlot_05*/: characterSlot05 = profile; break;
+                }
+            }
         }
 
         public IEnumerator LoadWorldScene()

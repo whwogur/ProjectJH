@@ -14,5 +14,6 @@ namespace JH
         CharacterSlot_03,
         CharacterSlot_04,
         CharacterSlot_05,
+        END,
     }
 }

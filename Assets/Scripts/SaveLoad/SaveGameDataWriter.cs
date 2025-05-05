@@ -22,6 +22,18 @@ namespace JH
             }
         }
 
+        public bool CheckIfFileAlreadyExists(in string directoryPath, in string fileName)
+        {
+            if (File.Exists(Path.Combine(directoryPath, fileName)))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /* Used to delete character save files */
         public void DeleteSaveFile()
         {
