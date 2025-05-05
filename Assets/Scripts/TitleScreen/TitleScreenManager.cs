@@ -12,7 +12,8 @@ namespace JH
 
         public void StartNewGame()
         {
-            StartCoroutine(WorldSaveGameManager.instance.LoadNewGame());
+            WorldSaveGameManager.instance.CreateNewGame();
+            StartCoroutine(WorldSaveGameManager.instance.LoadWorldScene());
         }
     }
 }
