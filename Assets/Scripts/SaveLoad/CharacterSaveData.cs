@@ -6,7 +6,7 @@ namespace JH
     public class CharacterSaveData
     {
         [Header("Character Name")]
-        public string characterName;
+        public string characterName = "Character";
 
         [Header("Time Player")]
         public float secondsPlayed;

@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO.Enumeration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,7 +12,7 @@ namespace JH
     {
         public static WorldSaveGameManager instance;
 
-        [SerializeField] PlayerManager player;
+        public PlayerManager player;
 
         [Header("Save/Load")]
         [SerializeField] bool saveGame;// TEMP
@@ -23,9 +25,9 @@ namespace JH
         private SaveGameDataWriter saveGameDataWriter;
 
         [Header("Current Character Data")]
-        public CharacterSlot currentCharacterSlot;
+        public CharacterSlot currentCharacterSlot = CharacterSlot.CharacterSlot_01;
         public CharacterSaveData currentCharacterData;
-        private string fileName;
+        private string fileName = string.Empty;
 
         [Header("Character Slots")]
         public CharacterSaveData characterSlot01;
@@ -110,12 +112,29 @@ namespace JH
             return string.Empty;
         }
 
-        public void CreateNewGame()
+        public void AttemptCreateNewGame()
         {
-            // create new file with a file name depending on which slot is used
-            fileName = DecideCharacterFileNameBasedOnCharacterSlot(currentCharacterSlot);
+            saveGameDataWriter = new SaveGameDataWriter();
+            // check to see if a new save file could be created ( check for other existing files first )
+            saveGameDataWriter.saveDataDirectoryPath = Application.persistentDataPath;
+            foreach (CharacterSlot slot in Enum.GetValues(typeof(CharacterSlot)))
+            {
+                currentCharacterSlot = slot;
+                saveGameDataWriter.saveFileName = DecideCharacterFileNameBasedOnCharacterSlot(currentCharacterSlot);
+                
+                // If this profile slot is not already in use, make a new one using this slot
+                if (!saveGameDataWriter.CheckIfFileAlreadyExists(saveGameDataWriter.saveDataDirectoryPath, saveGameDataWriter.saveFileName))
+                {
+                    // create new file with a file name depending on which slot is used
+                    currentCharacterData = new CharacterSaveData();
+                    fileName = saveGameDataWriter.saveFileName;
+                    StartCoroutine(LoadWorldScene());
+                    return;
+                }
+            }
 
-            currentCharacterData = new CharacterSaveData();
+            // There are no free slots
+            TitleScreenManager.instance.DisplayNoFreeCharacterSlotsPopup();
         }
 
         public void LoadGame()
@@ -173,6 +192,7 @@ namespace JH
         public IEnumerator LoadWorldScene()
         {
             AsyncOperation loadOperation = SceneManager.LoadSceneAsync(worldSceneIndex);
+            player.LoadGameDataFromCurrentCharacterData(ref currentCharacterData);
 
             yield return null;
         }

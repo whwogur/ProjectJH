@@ -55,6 +55,7 @@ namespace JH
             {
                 PlayerCamera.instance.player = this;
                 PlayerInputManager.instance.player = this;
+                WorldSaveGameManager.instance.player = this;
 
                 if (null == PlayerUIManager.instance || null == PlayerUIManager.instance.playerHUDManager)
                 {

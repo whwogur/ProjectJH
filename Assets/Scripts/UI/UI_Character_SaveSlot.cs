@@ -34,5 +34,11 @@ namespace JH
                 gameObject.SetActive(false);
             }
         }
+
+        public void LoadGameFromCharacterSlot()
+        {
+            WorldSaveGameManager.instance.currentCharacterSlot = characterSlot;
+            WorldSaveGameManager.instance.LoadGame();
+        }
     }
 }
