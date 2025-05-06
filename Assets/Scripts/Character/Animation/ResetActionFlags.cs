@@ -17,6 +17,7 @@ namespace JH
             character.canMove = true;
             character.canRotate = true;
             character.applyRootMotion = false;
+            character.isJumping = false;
         }
     }
 }

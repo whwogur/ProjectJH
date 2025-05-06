@@ -19,6 +19,12 @@ namespace JH
         [SerializeField] float rotationSpeed = 15.0f;
         [SerializeField] float sprintingStaminaCost = 1.0f;
 
+        [Header("Jump")]
+        [SerializeField] float jumpHeight = 3.14f;
+        [SerializeField] float jumpMovementSpeed = 5.0f;
+        [SerializeField] float freeFallMovementSpeed = 3.0f;
+        private Vector3 jumpDirection;
+
         [Header("Dodge")]
         private Vector3 dodgeDirection;
         [SerializeField] float dodgeStaminaCost = 2.0f;
@@ -51,6 +57,8 @@ namespace JH
         {
             HandleRotation();
             HandleGroundedMovement();
+            HandleJumpingMovement();
+            HandleFreeFallMovement();
         }
 
         private void GetMovementValues()
@@ -86,6 +94,27 @@ namespace JH
                 {
                     player.characterController.Move(moveDirection * walkingSpeed * Time.deltaTime);
                 }
+            }
+        }
+
+        private void HandleJumpingMovement()
+        {
+            if (player.isJumping)
+            {
+                player.characterController.Move(jumpDirection * jumpMovementSpeed * Time.deltaTime);
+            }
+        }
+
+        private void HandleFreeFallMovement()
+        {
+            if (!player.isGrounded)
+            {
+                Vector3 freeFallDirection;
+                freeFallDirection = PlayerCamera.instance.transform.forward * PlayerInputManager.instance.verticalInput;
+                freeFallDirection += PlayerCamera.instance.transform.right * PlayerInputManager.instance.horizontalInput;
+                freeFallDirection.y = 0.0f;
+
+                player.characterController.Move(freeFallDirection * freeFallMovementSpeed * Time.deltaTime);
             }
         }
 
@@ -170,6 +199,44 @@ namespace JH
 
             //Debug.Log($"{player.playerNetworkManager.currentStamina.Value} - {dodgeStaminaCost}");
             player.playerNetworkManager.currentStamina.Value -= dodgeStaminaCost;
+        }
+
+        public void AttempToPerformJump()
+        {
+            if (player.isPerformingAction || player.isJumping || !player.isGrounded)
+            {
+                return;
+            }
+
+            player.playerAnimatorManager.PlayTargetActionAnimation("Jump", false, true);
+
+            player.isJumping = true;
+
+            jumpDirection = PlayerCamera.instance.cameraObject.transform.forward * PlayerInputManager.instance.verticalInput;
+            jumpDirection += PlayerCamera.instance.cameraObject.transform.right * PlayerInputManager.instance.horizontalInput;
+            jumpDirection.y = 0.0f;
+
+            if (Vector3.zero != jumpDirection)
+            {
+                if (player.playerNetworkManager.isSprinting.Value)
+                {
+                    jumpDirection *= 1.0f;
+                }
+                else if (0.5f < PlayerInputManager.instance.moveAmount)
+                {
+                    jumpDirection *= 0.5f;
+                }
+                else if (0.5f >= PlayerInputManager.instance.moveAmount)
+                {
+                    jumpDirection *= 0.25f;
+                }
+            }
+        }
+
+        public void ApplyJumpingVelocity()
+        {
+            // apply upward velocity
+            Velocity.y = Mathf.Sqrt(jumpHeight * -1.0f * gravityForce);
         }
     }
 }

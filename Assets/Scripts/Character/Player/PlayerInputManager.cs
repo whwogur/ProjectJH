@@ -26,6 +26,7 @@ namespace JH
         [Header("Player Action Input")]
         [SerializeField] bool dodgeInput = false;
         [SerializeField] bool sprintInput = false;
+        [SerializeField] bool jumpInput = false;
 
         private void Awake()
         {
@@ -72,6 +73,8 @@ namespace JH
                 playerControls.PlayerActions.Sprint.performed += i => sprintInput = true;
                 // Releasing input sets bool to false
                 playerControls.PlayerActions.Sprint.canceled += i => sprintInput = false;
+
+                playerControls.PlayerActions.Jump.performed += i => jumpInput = true;
             }
 
             playerControls.Enable();
@@ -107,7 +110,8 @@ namespace JH
             HandleCameraMovementInput();
             HandlePlayerMovementInput();
             HandleDodgeInput();
-            HandleSprinting();
+            HandleSprintInput();
+            HandleJumpInput();
         }
 
         // Movement
@@ -152,7 +156,7 @@ namespace JH
             }
         }
 
-        private void HandleSprinting()
+        private void HandleSprintInput()
         {
             if (sprintInput)
             {
@@ -161,6 +165,19 @@ namespace JH
             else
             {
                 player.playerNetworkManager.isSprinting.Value = false;
+            }
+        }
+
+        private void HandleJumpInput()
+        {
+            if (jumpInput)
+            {
+                jumpInput = false;
+
+                // if any UI is open, return
+
+                // attempt perform jump
+                player.playerLocomotionManager.AttempToPerformJump();
             }
         }
     }

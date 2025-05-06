@@ -16,6 +16,8 @@ namespace JH
         public bool applyRootMotion = false;
         public bool canRotate = true;
         public bool canMove = true;
+        public bool isGrounded = true;
+        public bool isJumping = false;
 
         protected virtual void Awake()
         {
@@ -28,6 +30,8 @@ namespace JH
 
         protected virtual void Update()
         {
+            animator.SetBool("IsGrounded", isGrounded);
+
             if (IsOwner)
             {
                 characterNetworkManager.networkPosition.Value = transform.position;
