@@ -40,5 +40,10 @@ namespace JH
             WorldSaveGameManager.instance.currentCharacterSlot = characterSlot;
             WorldSaveGameManager.instance.LoadGame();
         }
+
+        public void SelectCurrentSlot()
+        {
+            TitleScreenManager.instance.SelectCharacterSlot(characterSlot);
+        }
     }
 }

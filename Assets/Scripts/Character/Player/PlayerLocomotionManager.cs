@@ -168,7 +168,7 @@ namespace JH
                 player.playerAnimatorManager.PlayTargetActionAnimation("Quickstep_B", true, true, false, true);
             }
 
-            Debug.Log($"{player.playerNetworkManager.currentStamina.Value} - {dodgeStaminaCost}");
+            //Debug.Log($"{player.playerNetworkManager.currentStamina.Value} - {dodgeStaminaCost}");
             player.playerNetworkManager.currentStamina.Value -= dodgeStaminaCost;
         }
     }

@@ -128,7 +128,7 @@ namespace JH
                     // create new file with a file name depending on which slot is used
                     currentCharacterData = new CharacterSaveData();
                     fileName = saveGameDataWriter.saveFileName;
-                    StartCoroutine(LoadWorldScene());
+                    StartCoroutine(LoadWorldScene(true));
                     return;
                 }
             }
@@ -147,7 +147,7 @@ namespace JH
             saveGameDataWriter.saveFileName = fileName;
             currentCharacterData = saveGameDataWriter.LoadSaveFile();
 
-            StartCoroutine(LoadWorldScene());
+            StartCoroutine(LoadWorldScene(false));
         }
 
         public void SaveGame()
@@ -166,6 +166,17 @@ namespace JH
             saveGameDataWriter.CreateNewCharacterSaveFile(currentCharacterData);
         }
 
+        public void DeleteGame(CharacterSlot characterSlot)
+        {
+            // choose file based on name
+            fileName = DecideCharacterFileNameBasedOnCharacterSlot(characterSlot);
+
+            saveGameDataWriter = new SaveGameDataWriter();
+            saveGameDataWriter.saveDataDirectoryPath = Application.persistentDataPath;
+            saveGameDataWriter.saveFileName = fileName;
+            saveGameDataWriter.DeleteSaveFile();
+        }
+
         /* Pre-Load all Character Profiles when starting game */
         private void LoadAllCharacterProfiles()
         {
@@ -176,7 +187,7 @@ namespace JH
             {
                 CharacterSlot slot = (CharacterSlot)System.Enum.Parse(typeof(CharacterSlot), $"CharacterSlot_0{i + 1}");
                 saveGameDataWriter.saveFileName = DecideCharacterFileNameBasedOnCharacterSlot(slot);
-                var profile = saveGameDataWriter.LoadSaveFile();
+                CharacterSaveData profile = saveGameDataWriter.LoadSaveFile();
 
                 switch (i)
                 {
@@ -189,9 +200,9 @@ namespace JH
             }
         }
 
-        public IEnumerator LoadWorldScene()
+        public IEnumerator LoadWorldScene(bool newGame)
         {
-            AsyncOperation loadOperation = SceneManager.LoadSceneAsync(worldSceneIndex);
+            AsyncOperation loadOperation = newGame ? SceneManager.LoadSceneAsync(worldSceneIndex) : SceneManager.LoadSceneAsync(currentCharacterData.sceneIndex);
             player.LoadGameDataFromCurrentCharacterData(ref currentCharacterData);
 
             yield return null;
