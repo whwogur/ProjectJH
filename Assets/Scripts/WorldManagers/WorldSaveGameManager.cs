@@ -128,13 +128,21 @@ namespace JH
                     // create new file with a file name depending on which slot is used
                     currentCharacterData = new CharacterSaveData();
                     fileName = saveGameDataWriter.saveFileName;
-                    StartCoroutine(LoadWorldScene(true));
+                    NewGame();
                     return;
                 }
             }
 
             // There are no free slots
             TitleScreenManager.instance.DisplayNoFreeCharacterSlotsPopup();
+        }
+
+        private void NewGame()
+        {
+            currentCharacterData.FreshStart();
+            StartCoroutine(LoadWorldScene(true));
+            // saves newly created character attributes
+            SaveGame();
         }
 
         public void LoadGame()

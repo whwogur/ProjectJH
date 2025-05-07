@@ -4,8 +4,17 @@ namespace JH
 {
     public class PlayerUI_HUDManager : MonoBehaviour
     {
+        public UI_StatBar healthBar;
         public UI_StatBar staminaBar;
 
+        public void RefreshHUD()
+        {
+            healthBar.gameObject.SetActive(false);
+            healthBar.gameObject.SetActive(true);
+
+            staminaBar.gameObject.SetActive(false);
+            staminaBar.gameObject.SetActive(true);
+        }
         public void SetNewStaminaValue(float oldValue, float newValue)
         {
             staminaBar.SetStat(newValue);
@@ -14,6 +23,16 @@ namespace JH
         public void SetMaxStaminaValue(float maxStamina)
         {
             staminaBar.SetMaxStat(maxStamina);
+        }
+
+        public void SetNewHealthValue(float oldValue, float newValue)
+        {
+            healthBar.SetStat(newValue);
+        }
+
+        public void SetMaxHealthValue(float maxHealth)
+        {
+            healthBar.SetMaxStat(maxHealth);
         }
     }
 }

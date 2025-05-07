@@ -5,7 +5,7 @@ namespace JH
 {
     public class CharacterStatsManager : MonoBehaviour
     {
-        CharacterManager character;
+        protected CharacterManager character;
 
         [Header("Stamina Regeneration")]
         private float staminaRegenerationTimer = 0.0f;
@@ -16,6 +16,20 @@ namespace JH
         protected virtual void Awake()
         {
             character = GetComponent<CharacterManager>();
+        }
+
+        protected virtual void Start()
+        {
+
+        }
+
+        public float CalculateHealthBasedOnVitalityLevel(int vitality)
+        {
+            float health = 0.0f;
+
+            health = vitality * 10.0f;
+
+            return health;
         }
 
         public float CalculateStaminaBasedOnEnduranceLevel(int endurance)

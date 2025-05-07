@@ -64,39 +64,32 @@ namespace JH
                     return;
                 }
 
-                float calculatedStamina = playerStatsManager.CalculateStaminaBasedOnEnduranceLevel(playerNetworkManager.endurance.Value);
-                if (0 >= calculatedStamina || float.IsNaN(calculatedStamina) || float.IsInfinity(calculatedStamina))
-                {
-                    Debug.LogError($"Invalid calculated stamina: {calculatedStamina}");
-                    calculatedStamina = 1.0f; // ±âº»°ª
-                }
-
-                playerNetworkManager.maxStamina.Value = calculatedStamina;
-                playerNetworkManager.currentStamina.Value = calculatedStamina;
-
-                if (null != PlayerUIManager.instance.playerHUDManager.staminaBar)
-                {
-                    playerNetworkManager.currentStamina.OnValueChanged += PlayerUIManager.instance.playerHUDManager.SetNewStaminaValue;
-                    playerNetworkManager.currentStamina.OnValueChanged += playerStatsManager.ResetStaminaRegenTimer;
-                    PlayerUIManager.instance.playerHUDManager.SetMaxStaminaValue(playerNetworkManager.maxStamina.Value);
-                }
-                else
-                {
-                    Debug.LogError("StaminaBar is not initialized!");
-                }
+                playerNetworkManager.vitality.OnValueChanged += playerNetworkManager.SetNewMaxHealthValue;
+                playerNetworkManager.endurance.OnValueChanged += playerNetworkManager.SetNewMaxStaminaValue;
             }
         }
 
         public void SaveGameDataToCurrentCharacterData(ref CharacterSaveData currentCharacterData)
         {
-            currentCharacterData.sceneIndex = SceneManager.GetActiveScene().buildIndex;
+            if (0/*TODO*/ == SceneManager.GetActiveScene().buildIndex)
+            {
+                currentCharacterData.sceneIndex = 1;
+            }
+            else
+            {
+                currentCharacterData.sceneIndex = SceneManager.GetActiveScene().buildIndex;
+            }
             currentCharacterData.characterName = playerNetworkManager.characterName.Value.ToString();
 
             currentCharacterData.xPosition = transform.position.x;
             currentCharacterData.yPosition = transform.position.y;
             currentCharacterData.zPosition = transform.position.z;
 
+            currentCharacterData.vitality = playerNetworkManager.vitality.Value;
+            currentCharacterData.endurance = playerNetworkManager.endurance.Value;
 
+            currentCharacterData.currentStamina = playerNetworkManager.currentStamina.Value;
+            currentCharacterData.currentHealth = playerNetworkManager.currentHealth.Value;
         }
 
         public void LoadGameDataFromCurrentCharacterData(ref CharacterSaveData currentCharacterData)
@@ -105,6 +98,72 @@ namespace JH
 
             Vector3 characterPosition = new Vector3(currentCharacterData.xPosition, currentCharacterData.yPosition, currentCharacterData.zPosition);
             transform.position = characterPosition;
+
+            InitializeStamina(currentCharacterData);
+            InitializeHealth(currentCharacterData);
+
+            currentCharacterData.FinishInitialization();
+        }
+
+        private void InitializeStamina(in CharacterSaveData currentCharacterData)
+        {
+            float calculatedMaxStamina = playerStatsManager.CalculateStaminaBasedOnEnduranceLevel(currentCharacterData.endurance);
+            if (0 >= calculatedMaxStamina || float.IsNaN(calculatedMaxStamina) || float.IsInfinity(calculatedMaxStamina))
+            {
+                Debug.LogError($"Invalid calculated stamina: {calculatedMaxStamina}");
+            }
+
+            playerNetworkManager.maxStamina.Value = calculatedMaxStamina;
+            if (currentCharacterData.NewGame)
+            {
+                playerNetworkManager.currentStamina.Value = calculatedMaxStamina;
+            }
+            else
+            {
+                playerNetworkManager.currentStamina.Value = currentCharacterData.currentStamina;
+            }
+            
+
+            if (null != PlayerUIManager.instance.playerHUDManager.staminaBar)
+            {
+                playerNetworkManager.currentStamina.OnValueChanged += PlayerUIManager.instance.playerHUDManager.SetNewStaminaValue;
+                playerNetworkManager.currentStamina.OnValueChanged += playerStatsManager.ResetStaminaRegenTimer;
+                PlayerUIManager.instance.playerHUDManager.SetMaxStaminaValue(playerNetworkManager.maxStamina.Value);
+            }
+            else
+            {
+                Debug.LogError("StaminaBar is not initialized!");
+            }
+        }
+
+        private void InitializeHealth(in CharacterSaveData currentCharacterData)
+        {
+            float calculatedMaxHealth = playerStatsManager.CalculateHealthBasedOnVitalityLevel(currentCharacterData.vitality);
+            if (0 >= calculatedMaxHealth || float.IsNaN(calculatedMaxHealth) || float.IsInfinity(calculatedMaxHealth))
+            {
+                Debug.LogError($"Invalid calculated health: {calculatedMaxHealth}");
+            }
+
+            playerNetworkManager.maxHealth.Value = calculatedMaxHealth;
+            if (currentCharacterData.NewGame)
+            {
+                playerNetworkManager.currentHealth.Value = calculatedMaxHealth;
+            }
+            else
+            {
+                playerNetworkManager.currentHealth.Value = currentCharacterData.currentHealth;
+            }
+                
+
+            if (null != PlayerUIManager.instance.playerHUDManager.healthBar)
+            {
+                playerNetworkManager.currentHealth.OnValueChanged += PlayerUIManager.instance.playerHUDManager.SetNewHealthValue;
+                PlayerUIManager.instance.playerHUDManager.SetMaxHealthValue(playerNetworkManager.maxHealth.Value);
+            }
+            else
+            {
+                Debug.LogError("HealthBar is not initialized!");
+            }
         }
     }
 }
