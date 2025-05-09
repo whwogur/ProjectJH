@@ -9,6 +9,9 @@ namespace JH
         private static WorldCharacterEffectsManager _instance;
         public static WorldCharacterEffectsManager instance => _instance;
 
+        [Header("Damage")]
+        public TakeDamageEffect takeDamageEffect;
+
         [SerializeField] List<InstantCharacterEffect> instantEffects;
 
         private void Awake()
