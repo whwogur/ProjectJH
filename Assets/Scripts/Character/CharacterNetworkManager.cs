@@ -7,6 +7,9 @@ namespace JH
     {
         CharacterManager character;
 
+        [Header("State")]
+        public NetworkVariable<bool> isDead = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
         [Header("Position")]
         public NetworkVariable<Vector3> networkPosition = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public NetworkVariable<Quaternion> networkRotation = new NetworkVariable<Quaternion>(Quaternion.identity, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -24,9 +27,9 @@ namespace JH
 
         [Header("Resources")]
         public NetworkVariable<float> currentStamina = new NetworkVariable<float>(0.0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        public NetworkVariable<float> maxStamina = new NetworkVariable<float>(0.0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        public NetworkVariable<float> currentHealth = new NetworkVariable<float>(0.0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        public NetworkVariable<float> maxHealth = new NetworkVariable<float>(0.0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public NetworkVariable<int> maxStamina = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public NetworkVariable<int> currentHealth = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public NetworkVariable<int> maxHealth = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         [Header("Attributes")]
         public NetworkVariable<int> vitality = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -35,6 +38,23 @@ namespace JH
         protected virtual void Awake()
         {
             character = GetComponent<CharacterManager>();
+        }
+
+        public void CheckHP(int oldValue, int newValue)
+        {
+            //Debug.Log($"CheckHP: oldValue={oldValue}, newValue={newValue}, currentHealth={currentHealth.Value}");
+
+            if (oldValue > 0 && newValue <= 0)
+            {
+                //Debug.Log("Player HP <= 0, starting death event.");
+                StartCoroutine(character.ProcessDeathEvent());
+            }
+
+            if (character.IsOwner && newValue > maxHealth.Value)
+            {
+                //Debug.Log("Clamping currentHealth to maxHealth.");
+                currentHealth.Value = maxHealth.Value;
+            }
         }
 
         [ServerRpc]

@@ -23,20 +23,20 @@ namespace JH
 
         }
 
-        public float CalculateHealthBasedOnVitalityLevel(int vitality)
+        public int CalculateHealthBasedOnVitalityLevel(int vitality)
         {
-            float health = 0.0f;
+            int health = 0;
 
-            health = vitality * 10.0f;
+            health = vitality * 10;
 
             return health;
         }
 
-        public float CalculateStaminaBasedOnEnduranceLevel(int endurance)
+        public int CalculateStaminaBasedOnEnduranceLevel(int endurance)
         {
-            float stamina = 0.0f;
+            int stamina = 0;
 
-            stamina = endurance * 10.0f;
+            stamina = endurance * 10;
 
             return stamina;
         }

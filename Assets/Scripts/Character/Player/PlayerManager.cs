@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,6 +8,9 @@ namespace JH
 {
     public class PlayerManager : CharacterManager
     {
+        [Header("Debug Menu")]
+        [SerializeField] bool respawnCharacter = false;
+
         [HideInInspector] public PlayerAnimatorManager playerAnimatorManager;
         [HideInInspector] public PlayerLocomotionManager playerLocomotionManager;
         [HideInInspector] public PlayerNetworkManager playerNetworkManager;
@@ -35,6 +39,8 @@ namespace JH
 
             // Stats
             playerStatsManager.RegenerateStamina();
+
+            DebugMenu();
         }
 
         protected override void LateUpdate()
@@ -66,6 +72,30 @@ namespace JH
 
                 playerNetworkManager.vitality.OnValueChanged += playerNetworkManager.SetNewMaxHealthValue;
                 playerNetworkManager.endurance.OnValueChanged += playerNetworkManager.SetNewMaxStaminaValue;
+            }
+        }
+
+        public override IEnumerator ProcessDeathEvent(bool manuallySelectDeathAnimation = false)
+        {
+            if (IsOwner)
+            {
+                PlayerUIManager.instance.playerPopupManager.SendDeathPopup();
+            }
+
+            return base.ProcessDeathEvent(manuallySelectDeathAnimation);
+        }
+
+        public override void ReviveCharacter()
+        {
+            base.ReviveCharacter();
+
+            if (IsOwner)
+            {
+                playerNetworkManager.currentHealth.Value = playerNetworkManager.maxHealth.Value;
+                playerNetworkManager.currentStamina.Value = playerNetworkManager.maxStamina.Value;
+                playerNetworkManager.isDead.Value = false;
+
+                playerAnimatorManager.PlayTargetActionAnimation("Empty", false);
             }
         }
 
@@ -107,14 +137,14 @@ namespace JH
 
         private void InitializeStamina(in CharacterSaveData currentCharacterData)
         {
-            float calculatedMaxStamina = playerStatsManager.CalculateStaminaBasedOnEnduranceLevel(currentCharacterData.endurance);
-            if (0 >= calculatedMaxStamina || float.IsNaN(calculatedMaxStamina) || float.IsInfinity(calculatedMaxStamina))
+            int calculatedMaxStamina = playerStatsManager.CalculateStaminaBasedOnEnduranceLevel(currentCharacterData.endurance);
+            if (0 >= calculatedMaxStamina)
             {
                 Debug.LogError($"Invalid calculated stamina: {calculatedMaxStamina}");
             }
 
             playerNetworkManager.maxStamina.Value = calculatedMaxStamina;
-            if (currentCharacterData.NewGame)
+            if (currentCharacterData.IsNewGame)
             {
                 playerNetworkManager.currentStamina.Value = calculatedMaxStamina;
             }
@@ -138,14 +168,10 @@ namespace JH
 
         private void InitializeHealth(in CharacterSaveData currentCharacterData)
         {
-            float calculatedMaxHealth = playerStatsManager.CalculateHealthBasedOnVitalityLevel(currentCharacterData.vitality);
-            if (0 >= calculatedMaxHealth || float.IsNaN(calculatedMaxHealth) || float.IsInfinity(calculatedMaxHealth))
-            {
-                Debug.LogError($"Invalid calculated health: {calculatedMaxHealth}");
-            }
+            int calculatedMaxHealth = playerStatsManager.CalculateHealthBasedOnVitalityLevel(currentCharacterData.vitality);
 
             playerNetworkManager.maxHealth.Value = calculatedMaxHealth;
-            if (currentCharacterData.NewGame)
+            if (currentCharacterData.IsNewGame)
             {
                 playerNetworkManager.currentHealth.Value = calculatedMaxHealth;
             }
@@ -163,6 +189,18 @@ namespace JH
             else
             {
                 Debug.LogError("HealthBar is not initialized!");
+            }
+
+            playerNetworkManager.currentHealth.OnValueChanged += playerNetworkManager.CheckHP;
+        }
+
+        /* TEMP; NEEDS TO BE DELETED LATER */
+        private void DebugMenu()
+        {
+            if (respawnCharacter)
+            {
+                respawnCharacter = false;
+                ReviveCharacter();
             }
         }
     }

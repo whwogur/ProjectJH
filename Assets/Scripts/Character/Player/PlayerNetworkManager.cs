@@ -12,6 +12,7 @@ namespace JH
 
         protected override void Awake()
         {
+            base.Awake();
             player = GetComponent<PlayerManager>();
         }
 

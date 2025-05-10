@@ -9,7 +9,7 @@ namespace JH
         // Variable to scale bar size depending on stat
         [Header("Bar Options")]
         [SerializeField] protected bool scaleBarLengthWithStats = true;
-        [SerializeField] protected float widthScaleMultiplier = 1.0f;
+        [SerializeField] protected float widthScaleMultiplier = 2.5f;
 
         // TODO : secondary bar that indicates how much resource has been consumed/ depleted
 

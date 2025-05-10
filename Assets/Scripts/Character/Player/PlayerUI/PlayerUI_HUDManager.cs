@@ -25,12 +25,12 @@ namespace JH
             staminaBar.SetMaxStat(maxStamina);
         }
 
-        public void SetNewHealthValue(float oldValue, float newValue)
+        public void SetNewHealthValue(int oldValue, int newValue)
         {
             healthBar.SetStat(newValue);
         }
 
-        public void SetMaxHealthValue(float maxHealth)
+        public void SetMaxHealthValue(int maxHealth)
         {
             healthBar.SetMaxStat(maxHealth);
         }

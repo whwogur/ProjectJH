@@ -1,19 +1,18 @@
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.Rendering;
+using System.Collections;
 
 namespace JH
 {
     public class CharacterManager : NetworkBehaviour
     {
-        [Header("Status")]
-        public NetworkVariable<bool> isDead = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        
         [HideInInspector] public CharacterController characterController;
         [HideInInspector] public Animator animator;
 
         [HideInInspector] public CharacterNetworkManager characterNetworkManager;
         [HideInInspector] public CharacterEffectsManager characterEffectsManager;
+        [HideInInspector] public CharacterAnimatorManager characterAnimatorManager;
 
         [Header("Flags")]
         public bool isPerformingAction = false;
@@ -31,6 +30,7 @@ namespace JH
             animator = GetComponent<Animator>();
             characterNetworkManager = GetComponent<CharacterNetworkManager>();
             characterEffectsManager = GetComponent<CharacterEffectsManager>();
+            characterAnimatorManager = GetComponent<CharacterAnimatorManager>();
         }
 
         protected virtual void Update()
@@ -61,6 +61,30 @@ namespace JH
         }
 
         protected virtual void LateUpdate()
+        {
+
+        }
+
+        public virtual IEnumerator ProcessDeathEvent(bool manuallySelectDeathAnimation = false)
+        {
+            if (IsOwner)
+            {
+                if (characterNetworkManager.currentHealth.Value > 0) // 이미 0이면 변경하지 않음
+                {
+                    characterNetworkManager.currentHealth.Value = 0;
+                }
+                characterNetworkManager.isDead.Value = true;
+
+                if (!manuallySelectDeathAnimation)
+                {
+                    characterAnimatorManager.PlayTargetActionAnimation("Dead_01", true);
+                }
+            }
+
+            yield return new WaitForSeconds(5);
+        }
+
+        public virtual void ReviveCharacter()
         {
 
         }

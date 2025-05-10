@@ -10,6 +10,7 @@ namespace JH
         [SerializeField] bool startGameAsClient;
 
         [HideInInspector] public PlayerUI_HUDManager playerHUDManager;
+        [HideInInspector] public PlayerUI_PopupManager playerPopupManager;
 
         private void Awake()
         {
@@ -22,8 +23,8 @@ namespace JH
                 Destroy(gameObject);
             }
 
-            //playerHUDManager = GetComponent<PlayerUI_HUDManager>();
             playerHUDManager = GetComponentInChildren<PlayerUI_HUDManager>();
+            playerPopupManager = GetComponentInChildren<PlayerUI_PopupManager>();
         }
 
         private void Start()

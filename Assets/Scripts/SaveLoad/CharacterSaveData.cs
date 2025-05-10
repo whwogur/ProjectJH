@@ -5,7 +5,7 @@ namespace JH
     [System.Serializable]
     public class CharacterSaveData
     {
-        public bool NewGame = false;
+        public bool IsNewGame = false;
 
         [Header("Scene Index")]
         public int sceneIndex;
@@ -22,7 +22,7 @@ namespace JH
         public float zPosition;
 
         [Header("Resources")]
-        public float currentHealth;
+        public int currentHealth;
         public float currentStamina;
 
         [Header("Stats")]
@@ -34,13 +34,13 @@ namespace JH
             vitality = 10;
             endurance = 10;
 
-            NewGame = true; // set to false after initialization
+            IsNewGame = true; // set to false after initialization
         }
 
         /* Sets bNewGame to false */
         public void FinishInitialization()
         {
-            NewGame = false;
+            IsNewGame = false;
         }
     }
 }

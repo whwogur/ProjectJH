@@ -16,7 +16,7 @@ namespace JH
         public float holyDamage     = 0.0f;
 
         [Header("Final Damage")]
-        private float finalDamage = 0.0f; // The damage the character takes after all calculations have been made
+        private int finalDamage = 0; // The damage the character takes after all calculations have been made
 
         [Header("Animation")]
         public bool playDamageAnimation = true;
@@ -39,7 +39,7 @@ namespace JH
         {
             base.ProcessEffect(character);
 
-            if (character.isDead.Value)
+            if (character.characterNetworkManager.isDead.Value)
             {
                 return;
             }
@@ -68,11 +68,11 @@ namespace JH
             // check character for armor absorb and subtract the percentage from the damage
 
             // add all damage types together, and apply final damage
-            finalDamage = physicalDamage + fireDamage + darkDamage + holyDamage;
+            finalDamage = Mathf.RoundToInt(physicalDamage + fireDamage + darkDamage + holyDamage);
 
             if (0 >= finalDamage)
             {
-                finalDamage = 1.0f;
+                finalDamage = 1;
             }
 
             character.characterNetworkManager.currentHealth.Value -= finalDamage;

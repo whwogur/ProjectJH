@@ -142,6 +142,9 @@ namespace JH
             currentCharacterData.FreshStart();
             StartCoroutine(LoadWorldScene(true));
             // saves newly created character attributes
+            // TEMP
+            player.playerNetworkManager.vitality.Value = 10;
+            player.playerNetworkManager.endurance.Value = 10;
             SaveGame();
         }
 
