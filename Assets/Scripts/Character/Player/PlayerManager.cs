@@ -10,11 +10,14 @@ namespace JH
     {
         [Header("Debug Menu")]
         [SerializeField] bool respawnCharacter = false;
+        [SerializeField] bool switchMainWeapon = false;
 
         [HideInInspector] public PlayerAnimatorManager playerAnimatorManager;
         [HideInInspector] public PlayerLocomotionManager playerLocomotionManager;
         [HideInInspector] public PlayerNetworkManager playerNetworkManager;
         [HideInInspector] public PlayerStatsManager playerStatsManager;
+        [HideInInspector] public PlayerInventoryManager playerInventoryManager;
+        [HideInInspector] public PlayerEquipmentManager playerEquipmentManager;
 
         protected override void Awake()
         {
@@ -24,6 +27,8 @@ namespace JH
             playerAnimatorManager = GetComponent<PlayerAnimatorManager>();
             playerNetworkManager = GetComponent<PlayerNetworkManager>();
             playerStatsManager = GetComponent<PlayerStatsManager>();
+            playerInventoryManager = GetComponent<PlayerInventoryManager>();
+            playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         }
 
         protected override void Update()
@@ -73,6 +78,10 @@ namespace JH
                 playerNetworkManager.vitality.OnValueChanged += playerNetworkManager.SetNewMaxHealthValue;
                 playerNetworkManager.endurance.OnValueChanged += playerNetworkManager.SetNewMaxStaminaValue;
             }
+
+            // Equipment
+            playerNetworkManager.currentMainWeaponID.OnValueChanged += playerNetworkManager.OnMainWeaponIDChange;
+            playerNetworkManager.currentSubWeaponID.OnValueChanged += playerNetworkManager.OnSubWeaponIDChange;
         }
 
         public override IEnumerator ProcessDeathEvent(bool manuallySelectDeathAnimation = false)
@@ -201,6 +210,12 @@ namespace JH
             {
                 respawnCharacter = false;
                 ReviveCharacter();
+            }
+
+            if (switchMainWeapon)
+            {
+                switchMainWeapon = false;
+                playerEquipmentManager.SwitchMainWeapon();
             }
         }
     }

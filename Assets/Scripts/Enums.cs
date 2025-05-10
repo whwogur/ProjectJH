@@ -16,4 +16,10 @@ namespace JH
         CharacterSlot_05,
         END,
     }
+
+    public enum WeaponModelSlot
+    {
+        MainWeapon,
+        SubWeapon,
+    }
 }

@@ -5,6 +5,9 @@ namespace JH
 {
     public class DamageCollider : MonoBehaviour
     {
+        [Header("Collider")]
+        protected Collider damageCollider;
+
         [Header("Damage")]
         public float physicalDamage = 0.0f;
         public float magicDamage = 0.0f;
@@ -50,6 +53,17 @@ namespace JH
             damageEffect.holyDamage = holyDamage;
                 
             damageTarget.characterEffectsManager.ProcessInstantEffect(damageEffect);
+        }
+
+        public virtual void EnableDamageCollider()
+        {
+            damageCollider.enabled = true;
+        }
+
+        public virtual void DisableDamageCollider()
+        {
+            damageCollider.enabled = false;
+            charactersDamaged.Clear();
         }
     }
 }

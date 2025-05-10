@@ -68,6 +68,7 @@ namespace JH
                 LoadGame();
             }
         }
+
         public string DecideCharacterFileNameBasedOnCharacterSlot(CharacterSlot designatedCharacterSlot)
         {
             string scopedFileName = "";
