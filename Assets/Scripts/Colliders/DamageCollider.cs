@@ -23,8 +23,7 @@ namespace JH
 
         private void OnTriggerEnter(Collider other)
         {
-            CharacterManager damageTarget = other.GetComponent<CharacterManager>();
-
+            CharacterManager damageTarget = other.GetComponentInParent<CharacterManager>();
             if (null != damageTarget)
             {
                 contactPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
@@ -51,7 +50,7 @@ namespace JH
             damageEffect.fireDamage = fireDamage;
             damageEffect.darkDamage = darkDamage;
             damageEffect.holyDamage = holyDamage;
-                
+
             damageTarget.characterEffectsManager.ProcessInstantEffect(damageEffect);
         }
 

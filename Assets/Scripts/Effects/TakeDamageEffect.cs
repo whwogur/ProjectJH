@@ -75,6 +75,7 @@ namespace JH
                 finalDamage = 1;
             }
 
+            Debug.Log($"{character.name} took {finalDamage} Damage");
             character.characterNetworkManager.currentHealth.Value -= finalDamage;
 
             // calculate poise damage to determine if the character will be stunned

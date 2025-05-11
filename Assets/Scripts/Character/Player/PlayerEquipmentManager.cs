@@ -51,7 +51,9 @@ namespace JH
             LoadSubWeapon();
         }
 
+        //=================
         // Main Weapon
+        //=================
         public void LoadMainWeapon()
         {
             if (null != player.playerInventoryManager.currentMainWeapon)
@@ -75,7 +77,8 @@ namespace JH
                 return;
             }
 
-            // TODO - Equip / Unequip Animations
+            // Equip / Unequip Animations
+            player.playerAnimatorManager.PlayTargetActionAnimation("TakeItemOut", false);
 
             WeaponItem selectedWeapon = null;
 
@@ -136,7 +139,9 @@ namespace JH
                 SwitchMainWeapon();
             }
         }
+        //=================
         // Sub Weapon
+        //=================
         public void LoadSubWeapon()
         {
             if (null != player.playerInventoryManager.currentSubWeapon)

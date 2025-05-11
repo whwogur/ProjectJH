@@ -31,7 +31,7 @@ namespace JH
         }
 
         public virtual void PlayTargetActionAnimation(
-            string targetAnimation,
+            in string targetAnimation,
             bool isPerformingAction,
             bool applyRootMotion = true,
             bool canRotate = false,
