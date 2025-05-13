@@ -13,11 +13,7 @@ namespace JH
                 character = animator.GetComponent<CharacterManager>();
             }
 
-            character.isPerformingAction = false;
-            character.canMove = true;
-            character.canRotate = true;
-            character.applyRootMotion = false;
-            character.isJumping = false;
+            character.ResetActionFlags();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace JH
         [SerializeField] GameObject deleteCharacterSlotPopup;
 
         [Header("Character Slots")]
-        public CharacterSlot currentSelectedSlot = CharacterSlot.END;
+        public ECharacterSlot currentSelectedSlot = ECharacterSlot.END;
 
         private void Awake()
         {
@@ -84,19 +84,19 @@ namespace JH
         //=================
         // Character Slots
         //=================
-        public void SelectCharacterSlot(CharacterSlot characterSlot)
+        public void SelectCharacterSlot(ECharacterSlot characterSlot)
         {
             currentSelectedSlot = characterSlot;
         }
 
         public void SelectNoSlot()
         {
-            currentSelectedSlot = CharacterSlot.END;
+            currentSelectedSlot = ECharacterSlot.END;
         }
 
         public void AttemptToDeleteCharacterSlot()
         {
-            if (CharacterSlot.END != currentSelectedSlot)
+            if (ECharacterSlot.END != currentSelectedSlot)
             {
                 deleteCharacterSlotPopup.SetActive(true);
                 deleteCharacterConfirmButton.Select();

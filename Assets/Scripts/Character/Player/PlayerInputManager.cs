@@ -46,6 +46,10 @@ namespace JH
             SceneManager.activeSceneChanged += OnSceneChange;
 
             instance.enabled = false;
+            if (null != playerControls)
+            {
+                playerControls.Disable();
+            }
         }
 
         private void OnSceneChange(Scene OldScene, Scene NewScene)
@@ -53,10 +57,18 @@ namespace JH
             if (WorldSaveGameManager.instance.GetWorldSceneIndex() == NewScene.buildIndex)
             {
                 instance.enabled = true;
+                if (null != playerControls)
+                {
+                    playerControls.Enable();
+                }
             }
             else
             {
                 instance.enabled = false;
+                if (null != playerControls)
+                {
+                    playerControls.Disable();
+                }
             }
         }
 

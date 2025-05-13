@@ -34,7 +34,7 @@ namespace JH
             }
             else
             {
-                if (!character.isJumping && Velocity.y <= 0)
+                if (Velocity.y <= 0 && !character.characterNetworkManager.isJumping.Value)
                 {
                     Velocity.y = fallStartYVelocity;
                 }

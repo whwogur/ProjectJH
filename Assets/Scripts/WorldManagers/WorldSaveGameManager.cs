@@ -25,7 +25,7 @@ namespace JH
         private SaveGameDataWriter saveGameDataWriter;
 
         [Header("Current Character Data")]
-        public CharacterSlot currentCharacterSlot = CharacterSlot.CharacterSlot_01;
+        public ECharacterSlot currentCharacterSlot = ECharacterSlot.CharacterSlot_01;
         public CharacterSaveData currentCharacterData;
         private string fileName = string.Empty;
 
@@ -69,24 +69,24 @@ namespace JH
             }
         }
 
-        public string DecideCharacterFileNameBasedOnCharacterSlot(CharacterSlot designatedCharacterSlot)
+        public string DecideCharacterFileNameBasedOnCharacterSlot(ECharacterSlot designatedCharacterSlot)
         {
             string scopedFileName = "";
             switch (designatedCharacterSlot)
             {
-                case CharacterSlot.CharacterSlot_01:
+                case ECharacterSlot.CharacterSlot_01:
                     scopedFileName = "CharacterSlot_01";
                     break;
-                case CharacterSlot.CharacterSlot_02:
+                case ECharacterSlot.CharacterSlot_02:
                     scopedFileName = "CharacterSlot_02";
                     break;
-                case CharacterSlot.CharacterSlot_03:
+                case ECharacterSlot.CharacterSlot_03:
                     scopedFileName = "CharacterSlot_03";
                     break;
-                case CharacterSlot.CharacterSlot_04:
+                case ECharacterSlot.CharacterSlot_04:
                     scopedFileName = "CharacterSlot_04";
                     break;
-                case CharacterSlot.CharacterSlot_05:
+                case ECharacterSlot.CharacterSlot_05:
                     scopedFileName = "CharacterSlot_05";
                     break;
             }
@@ -94,19 +94,19 @@ namespace JH
             return scopedFileName;
         }
 
-        public string GetCharacterName(CharacterSlot designatedCharacterSlot)
+        public string GetCharacterName(ECharacterSlot designatedCharacterSlot)
         {
             switch (designatedCharacterSlot)
             {
-                case CharacterSlot.CharacterSlot_01:
+                case ECharacterSlot.CharacterSlot_01:
                     return characterSlot01.characterName;
-                case CharacterSlot.CharacterSlot_02:
+                case ECharacterSlot.CharacterSlot_02:
                     return characterSlot02.characterName;
-                case CharacterSlot.CharacterSlot_03:
+                case ECharacterSlot.CharacterSlot_03:
                     return characterSlot03.characterName;
-                case CharacterSlot.CharacterSlot_04:
+                case ECharacterSlot.CharacterSlot_04:
                     return characterSlot04.characterName;
-                case CharacterSlot.CharacterSlot_05:
+                case ECharacterSlot.CharacterSlot_05:
                     return characterSlot05.characterName;
             }
 
@@ -118,7 +118,7 @@ namespace JH
             saveGameDataWriter = new SaveGameDataWriter();
             // check to see if a new save file could be created ( check for other existing files first )
             saveGameDataWriter.saveDataDirectoryPath = Application.persistentDataPath;
-            foreach (CharacterSlot slot in Enum.GetValues(typeof(CharacterSlot)))
+            foreach (ECharacterSlot slot in Enum.GetValues(typeof(ECharacterSlot)))
             {
                 currentCharacterSlot = slot;
                 saveGameDataWriter.saveFileName = DecideCharacterFileNameBasedOnCharacterSlot(currentCharacterSlot);
@@ -178,7 +178,7 @@ namespace JH
             saveGameDataWriter.CreateNewCharacterSaveFile(currentCharacterData);
         }
 
-        public void DeleteGame(CharacterSlot characterSlot)
+        public void DeleteGame(ECharacterSlot characterSlot)
         {
             // choose file based on name
             fileName = DecideCharacterFileNameBasedOnCharacterSlot(characterSlot);
@@ -195,9 +195,9 @@ namespace JH
             saveGameDataWriter = new SaveGameDataWriter();
             saveGameDataWriter.saveDataDirectoryPath = Application.persistentDataPath;
 
-            for (int i = 0; i < (int)CharacterSlot.END; ++i)
+            for (int i = 0; i < (int)ECharacterSlot.END; ++i)
             {
-                CharacterSlot slot = (CharacterSlot)System.Enum.Parse(typeof(CharacterSlot), $"CharacterSlot_0{i + 1}");
+                ECharacterSlot slot = (ECharacterSlot)System.Enum.Parse(typeof(ECharacterSlot), $"CharacterSlot_0{i + 1}");
                 saveGameDataWriter.saveFileName = DecideCharacterFileNameBasedOnCharacterSlot(slot);
                 CharacterSaveData profile = saveGameDataWriter.LoadSaveFile();
 

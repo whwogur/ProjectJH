@@ -21,7 +21,6 @@ namespace JH
         public bool canRotate = true;
         public bool canMove = true;
         public bool isGrounded = true;
-        public bool isJumping = false;
 
         protected virtual void Awake()
         {
@@ -69,6 +68,18 @@ namespace JH
         protected virtual void LateUpdate()
         {
 
+        }
+
+        public virtual void ResetActionFlags()
+        {
+            isPerformingAction = false;
+            canMove = true;
+            canRotate = true;
+            applyRootMotion = false;
+            if (IsOwner)
+            {
+                characterNetworkManager.isJumping.Value = false;
+            }
         }
 
         public virtual IEnumerator ProcessDeathEvent(bool manuallySelectDeathAnimation = false)

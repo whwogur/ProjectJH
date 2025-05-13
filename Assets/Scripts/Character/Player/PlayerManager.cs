@@ -18,6 +18,7 @@ namespace JH
         [HideInInspector] public PlayerStatsManager playerStatsManager;
         [HideInInspector] public PlayerInventoryManager playerInventoryManager;
         [HideInInspector] public PlayerEquipmentManager playerEquipmentManager;
+        [HideInInspector] public PlayerCombatManager playerCombatManager;
 
         protected override void Awake()
         {
@@ -29,16 +30,17 @@ namespace JH
             playerStatsManager = GetComponent<PlayerStatsManager>();
             playerInventoryManager = GetComponent<PlayerInventoryManager>();
             playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
+            playerCombatManager = GetComponent<PlayerCombatManager>();
         }
 
         protected override void Update()
         {
+            base.Update();
             if (!IsOwner)
             {
                 return;
             }
 
-            base.Update();
             // Handle Movement
             playerLocomotionManager.HandleAllMovement();
 
@@ -82,6 +84,7 @@ namespace JH
             // Equipment
             playerNetworkManager.currentMainWeaponID.OnValueChanged += playerNetworkManager.OnMainWeaponIDChange;
             playerNetworkManager.currentSubWeaponID.OnValueChanged += playerNetworkManager.OnSubWeaponIDChange;
+            playerNetworkManager.currentWeapon.OnValueChanged += playerNetworkManager.OnCurrentWeaponIDChange;
         }
 
         public override IEnumerator ProcessDeathEvent(bool manuallySelectDeathAnimation = false)
@@ -133,6 +136,7 @@ namespace JH
 
         public void LoadGameDataFromCurrentCharacterData(ref CharacterSaveData currentCharacterData)
         {
+            Debug.Log($"{currentCharacterData.characterName}");
             playerNetworkManager.characterName.Value = currentCharacterData.characterName;
 
             Vector3 characterPosition = new Vector3(currentCharacterData.xPosition, currentCharacterData.yPosition, currentCharacterData.zPosition);

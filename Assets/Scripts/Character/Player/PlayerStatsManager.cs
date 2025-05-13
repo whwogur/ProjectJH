@@ -13,8 +13,6 @@ namespace JH
         {
             base.Start();
 
-            CalculateHealthBasedOnVitalityLevel(character.characterNetworkManager.vitality.Value);
-            CalculateStaminaBasedOnEnduranceLevel(character.characterNetworkManager.endurance.Value);
         }
     }
 }

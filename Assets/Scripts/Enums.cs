@@ -7,7 +7,7 @@ namespace JH
 
     }
 
-    public enum CharacterSlot
+    public enum ECharacterSlot
     {
         CharacterSlot_01,
         CharacterSlot_02,

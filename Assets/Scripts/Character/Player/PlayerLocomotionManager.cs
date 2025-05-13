@@ -99,7 +99,7 @@ namespace JH
 
         private void HandleJumpingMovement()
         {
-            if (player.isJumping)
+            if (player.playerNetworkManager.isJumping.Value)
             {
                 player.characterController.Move(jumpDirection * jumpMovementSpeed * Time.deltaTime);
             }
@@ -203,14 +203,14 @@ namespace JH
 
         public void AttempToPerformJump()
         {
-            if (player.isPerformingAction || player.isJumping || !player.isGrounded)
+            if (player.isPerformingAction || !player.isGrounded || player.playerNetworkManager.isJumping.Value)
             {
                 return;
             }
 
             player.playerAnimatorManager.PlayTargetActionAnimation("Jump", false, true);
 
-            player.isJumping = true;
+            player.playerNetworkManager.isJumping.Value = true;
 
             jumpDirection = PlayerCamera.instance.cameraObject.transform.forward * PlayerInputManager.instance.verticalInput;
             jumpDirection += PlayerCamera.instance.cameraObject.transform.right * PlayerInputManager.instance.horizontalInput;

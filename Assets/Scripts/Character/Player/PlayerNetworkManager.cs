@@ -11,13 +11,30 @@ namespace JH
         public NetworkVariable<FixedString64Bytes> characterName = new NetworkVariable<FixedString64Bytes>("Character", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         [Header("Equipment")]
+        public NetworkVariable<int> currentWeapon = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public NetworkVariable<int> currentMainWeaponID = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public NetworkVariable<int> currentSubWeaponID = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public NetworkVariable<bool> isUsingMainWeapon = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public NetworkVariable<bool> isUsingSubWeapon = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         protected override void Awake()
         {
             base.Awake();
             player = GetComponent<PlayerManager>();
+        }
+
+        public void SetCharacterActionWeapon(bool mainWeaponAction)
+        {
+            if (mainWeaponAction)
+            {
+                isUsingSubWeapon.Value = true;
+                isUsingMainWeapon.Value = true;
+            }
+            else
+            {
+                isUsingSubWeapon.Value = true;
+                isUsingMainWeapon.Value = false;
+            }
         }
 
         public void SetNewMaxHealthValue(int oldVitality, int newVitality)
@@ -55,6 +72,20 @@ namespace JH
             {
                 player.playerInventoryManager.currentSubWeapon = newWeapon;
                 player.playerEquipmentManager.LoadSubWeapon();
+            }
+            else
+            {
+                Debug.LogError($"Cannot Find weapon newID:{newID}, oldID:{oldID}");
+            }
+        }
+
+        public void OnCurrentWeaponIDChange(int oldID, int newID)
+        {
+            WeaponItem newWeapon = Instantiate(WorldItemDatabase.instance.GetWeaponByID(newID));
+            if (null != newWeapon)
+            {
+                player.playerInventoryManager.currentMainWeapon = newWeapon;
+                player.playerCombatManager.currentWeapon = newWeapon;
             }
             else
             {

@@ -8,7 +8,7 @@ namespace JH
         SaveGameDataWriter saveDataWriter;
 
         [Header("Game Slot")]
-        public CharacterSlot characterSlot;
+        public ECharacterSlot characterSlot;
 
         [Header("Character Info")]
         public TextMeshProUGUI characterName;
